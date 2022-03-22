@@ -1,0 +1,26 @@
+{
+	"editor.minimap.enabled": false,
+	"editor.tabSize": 4,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/node_modules": true,
+		"**/build": true
+	},
+	"disregardExcludeSettings": true,
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/build": true
+	},
+	"editor.renderWhitespace": "none",
+	"window.zoomLevel": 0,
+	"workbench.settings.editor": "json",
+	"workbench.fontAliasing": "antialiased",
+	"workbench.view.alwaysShowHeaderActions": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"prettier.tabWidth": 4
+}
