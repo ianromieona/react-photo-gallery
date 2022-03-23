@@ -182,7 +182,7 @@ const PhotoGalleryApp = () => {
             >
                 <ImageList cols={3}>
                     {photos.map((item) => (
-                        <ImageListItem key={item.id}>
+                        <ImageListItem key={item.id} role="image">
                             <img
                                 src={item?.urls?.regular}
                                 srcSet={item?.urls?.regular}

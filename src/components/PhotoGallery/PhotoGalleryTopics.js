@@ -59,7 +59,12 @@ const PhotoGalleryTopics = (props) => {
             >
                 <Tab value="home-default" label="Popular" />
                 {topics.map((item, i) => (
-                    <Tab value={i} label={item.title} key={i} />
+                    <Tab
+                        value={i}
+                        label={item.title}
+                        key={i}
+                        data-testid="tab"
+                    />
                 ))}
             </Tabs>
         </AppBar>

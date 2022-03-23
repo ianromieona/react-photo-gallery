@@ -48,6 +48,8 @@ or
  yarn start
 ```
 
-## Excluded functional requirement
+## Run Test
 
--   No test available
+```sh
+ npm run test
+```
