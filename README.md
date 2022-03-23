@@ -1,6 +1,6 @@
 # Getting Started with Photo Gallery App
 
-This project is built in ReactJS with integrated Unsplash API.
+This application is built in ReactJS with integrated Unsplash API.
 
 ## Features
 
@@ -17,6 +17,7 @@ This project is built in ReactJS with integrated Unsplash API.
 -   React Router
 -   Axios
 -   Use debounce (For search function)
+-
 
 ## Installation
 
@@ -46,3 +47,7 @@ or
 ```sh
  yarn start
 ```
+
+## Excluded functional requirement
+
+-   No test available
