@@ -1,17 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // UI
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
 
 // Store
 import { getListOfTopics } from "./store/photoGallerySlice";
 
-const PhotoGalleryTopics = () => {
+const PhotoGalleryTopics = (props) => {
+    const { topic } = props;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [tab, setTab] = useState(topic ?? "home-default");
 
     const topics = useSelector((state) => state.photoGalleryReducer.topics);
 
@@ -19,22 +22,43 @@ const PhotoGalleryTopics = () => {
         dispatch(getListOfTopics());
     }, [dispatch]);
 
+    // Set tab active when topic is active
+    useEffect(() => {
+        if (topics) {
+            const slugs = topics.map((t) => t.slug);
+            const index = slugs.indexOf(topic);
+
+            if (index >= 0) {
+                setTab(slugs.indexOf(topic));
+            }
+        }
+    }, [topics]);
+
     const handleChange = (event, newValue) => {
-        navigate("/t/" + topics[newValue]?.slug);
+        setTab(newValue);
+        const url =
+            newValue !== "home-default" ? "/t/" + topics[newValue]?.slug : "/";
+        navigate(url);
     };
 
     return (
-        <Box sx={{ width: "100%" }}>
+        <AppBar position="static" color="default">
             <Tabs
-                value={0}
+                value={tab}
                 onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="auto"
                 aria-label="wrapped label tabs example"
+                TabIndicatorProps={{
+                    style: { transition: "none" },
+                }}
             >
+                <Tab value="home-default" label="Popular" />
                 {topics.map((item, i) => (
                     <Tab value={i} label={item.title} key={i} />
                 ))}
             </Tabs>
-        </Box>
+        </AppBar>
     );
 };
 

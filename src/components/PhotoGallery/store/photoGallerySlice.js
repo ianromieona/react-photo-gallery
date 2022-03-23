@@ -85,12 +85,17 @@ export const photoGallery = createSlice({
             per_page: 10, // initial at 20
             page: 1,
             query: "",
+            order_by: null,
         },
+        ref: "default",
     }),
     reducers: {
         setLoading: (state, action) => {
             state.isLoading = action.payload.loading;
             state.loadingRef = action.payload.ref;
+        },
+        setSort: (state, action) => {
+            state.request.order_by = action.payload;
         },
     },
     extraReducers: {
@@ -102,10 +107,22 @@ export const photoGallery = createSlice({
 
             const { requestParams, data } = action.payload;
             state.request = requestParams;
-            sliceAdapter.addMany(state, data);
+            if (state.ref === "default") {
+                sliceAdapter.addMany(state, data);
+            } else {
+                sliceAdapter.setAll(state, data);
+            }
+
+            state.ref = "default";
+        },
+
+        // Photos by search extra reducer
+        [searchPhotos.pending]: (state, action) => {
+            state.isLoading = true;
         },
         [searchPhotos.fulfilled]: (state, action) => {
             state.isLoading = false;
+            state.ref = "search";
 
             const { requestParams, data } = action.payload;
             if (state.request.query !== requestParams.query) {
@@ -116,8 +133,14 @@ export const photoGallery = createSlice({
 
             state.request = requestParams;
         },
+
+        // Photos by topic extra reducer
+        [getPhotosByTopic.pending]: (state, action) => {
+            state.isLoading = true;
+        },
         [getPhotosByTopic.fulfilled]: (state, action) => {
             state.isLoading = false;
+            state.ref = "topic";
 
             const { requestParams, data, topic } = action.payload;
             if (state.topic !== topic) {
@@ -140,6 +163,6 @@ export const photoGallery = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading } = photoGallery.actions;
+export const { setLoading, setSort } = photoGallery.actions;
 
 export default photoGallery.reducer;

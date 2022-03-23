@@ -4,10 +4,14 @@ import { useDebounce } from "use-debounce";
 import { useParams, useNavigate } from "react-router-dom";
 
 // UI
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
+import Paper from "@mui/material/Paper";
+import InputBase from "@mui/material/InputBase";
+import IconButton from "@mui/material/IconButton";
+import HomeIcon from "@mui/icons-material/Home";
+import SearchIcon from "@mui/icons-material/Search";
 
 // Store
 import {
@@ -15,10 +19,12 @@ import {
     getPhotos,
     getPhotosByTopic,
     selectAll,
+    setSort,
 } from "./store/photoGallerySlice";
 
 // Components
 import PhotoGalleryTopics from "./PhotoGalleryTopics";
+import PhotoGallerySort from "./PhotoGallerySort";
 
 function PhotoGalleryApp() {
     const { innerHeight: height } = window;
@@ -29,6 +35,7 @@ function PhotoGalleryApp() {
 
     const [resource, setResource] = useState("default");
     const [searchText, setSearchText] = useState("");
+    const [topic, setTopic] = useState(null);
     const [debouncedText] = useDebounce(searchText, 300);
 
     const photoGallery = useSelector((state) => state.photoGalleryReducer);
@@ -39,26 +46,36 @@ function PhotoGalleryApp() {
         const { search, topic } = routerParams;
         const requestParams = {
             ...photoGallery.request,
-            query: search ?? null,
+            page: 1,
         };
         if (typeof search !== "undefined") {
             setResource("search");
+            setTopic(null);
 
-            requestParams.page = 1;
+            requestParams.query = search ?? null;
             dispatch(searchPhotos(requestParams));
         } else if (typeof topic !== "undefined") {
             setResource("topics");
             setSearchText("");
+            setTopic(topic);
+
+            requestParams.order_by = null;
+            requestParams.query = null;
             requestParams.page = 1;
             dispatch(getPhotosByTopic({ requestParams, topic }));
         } else {
             setResource("default");
+            setSearchText(null);
+            setTopic(null);
 
+            requestParams.order_by = null;
+            requestParams.query = null;
+            requestParams.page = 1;
             dispatch(getPhotos(requestParams));
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, routerParams]);
+    }, [dispatch, routerParams, photoGallery.request.order_by]);
 
     // Navigate search
     useEffect(() => {
@@ -70,8 +87,6 @@ function PhotoGalleryApp() {
 
     // Handle fetching more photos
     const getMore = () => {
-        const { search, topic } = routerParams;
-        console.log(search, topic);
         const requestParams = {
             ...photoGallery.request,
             per_page: 10,
@@ -83,6 +98,8 @@ function PhotoGalleryApp() {
                 dispatch(searchPhotos(requestParams));
                 break;
             case "topics":
+                const { topic } = routerParams;
+
                 dispatch(getPhotosByTopic({ requestParams, topic }));
                 break;
             case "default":
@@ -93,9 +110,13 @@ function PhotoGalleryApp() {
         }
     };
 
+    // Handle Search sort
+    const handleSort = (sortType) => {
+        dispatch(setSort(sortType));
+    };
+
     // Handle Infinite scroll
     const handleScroll = (e) => {
-        console.log("a");
         const bottom =
             rootRef.current.scrollHeight - rootRef.current.scrollTop <=
             rootRef.current.clientHeight;
@@ -106,16 +127,49 @@ function PhotoGalleryApp() {
     return (
         <div>
             <div style={{ padding: "10px" }}>
-                <TextField
-                    id="outlined"
-                    label="Search"
-                    variant="outlined"
-                    onChange={(ev) => setSearchText(ev.target.value)}
-                    className="w-full mx-10"
-                    value={searchText}
-                />
-                <PhotoGalleryTopics />
+                <Paper
+                    component="form"
+                    sx={{
+                        p: "2px 4px",
+                        display: "flex",
+                        alignItems: "center",
+                        mb: "10px",
+                    }}
+                >
+                    <IconButton
+                        sx={{ p: "10px" }}
+                        aria-label="menu"
+                        onClick={() => navigate("/")}
+                    >
+                        <HomeIcon />
+                    </IconButton>
+                    <InputBase
+                        value={searchText}
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search Photos"
+                        inputProps={{ "aria-label": "search photos" }}
+                        onChange={(ev) => setSearchText(ev.target.value)}
+                    />
+
+                    <SearchIcon sx={{ p: "10px" }} />
+                </Paper>
+                {resource !== "search" && <PhotoGalleryTopics topic={topic} />}
             </div>
+
+            {resource === "search" && photos && (
+                <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ padding: "10px" }}
+                >
+                    Results found for `{photoGallery.request.query}`
+                    <PhotoGallerySort
+                        handleSort={handleSort}
+                        sort={photoGallery.request.order_by}
+                    />
+                </Typography>
+            )}
+
             <div
                 ref={rootRef}
                 onScroll={handleScroll}
