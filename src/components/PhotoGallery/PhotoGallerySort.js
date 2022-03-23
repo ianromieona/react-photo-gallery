@@ -30,7 +30,6 @@ const PhotoGallerySort = ({ handleSort, sort }) => {
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
                 onClick={handleClick}
-                style={{ textTransform: "unset !important" }}
             >
                 Sort by: {sort === "latest" ? "Latest" : "Relevance"}
             </Button>

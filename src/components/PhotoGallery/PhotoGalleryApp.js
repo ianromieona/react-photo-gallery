@@ -105,8 +105,6 @@ const PhotoGalleryApp = () => {
                 dispatch(searchPhotos(requestParams));
                 break;
             case "topics":
-                const { topic } = routerParams;
-
                 dispatch(getPhotosByTopic({ requestParams, topic }));
                 break;
             case "default":

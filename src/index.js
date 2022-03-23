@@ -1,9 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// CSS
+import "./index.css";
+
+// Components
+import App from "./App";
+import NotFoundApp from "./components/NotFound/NotFoundApp";
 
 // Redux
 import { Provider } from "react-redux";
@@ -14,6 +19,7 @@ ReactDOM.render(
         <Provider store={store}>
             <BrowserRouter>
                 <Routes>
+                    <Route path="*" element={<NotFoundApp />} />
                     <Route path="/" element={<App />} />
                     <Route path="/q/:search" element={<App />} />
                     <Route path="/t/:topic" element={<App />} />

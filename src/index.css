@@ -21,3 +21,7 @@ code {
 .right {
     float: right;
 }
+
+.not-found {
+    padding: 10%;
+}

@@ -52,7 +52,7 @@ const PhotoGalleryTopics = (props) => {
                 onChange={handleChange}
                 variant="scrollable"
                 scrollButtons="auto"
-                aria-label="wrapped label tabs example"
+                aria-label="wrapped label tabs"
                 TabIndicatorProps={{
                     style: { transition: "none" },
                 }}
