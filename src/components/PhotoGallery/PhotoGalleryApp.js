@@ -96,7 +96,7 @@ const PhotoGalleryApp = () => {
     const getMore = () => {
         const requestParams = {
             ...photoGallery.request,
-            per_page: 10,
+            per_page: 15,
             page: photoGallery.request.page + 1,
         };
 

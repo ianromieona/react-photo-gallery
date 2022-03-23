@@ -82,7 +82,7 @@ export const photoGallery = createSlice({
         topics: [],
         topic: [],
         request: {
-            per_page: 10, // initial at 20
+            per_page: 15, // initial at 15
             page: 1,
             query: "",
             order_by: null,
