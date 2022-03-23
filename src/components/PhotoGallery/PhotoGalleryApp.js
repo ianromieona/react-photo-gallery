@@ -19,14 +19,16 @@ import {
     getPhotos,
     getPhotosByTopic,
     selectAll,
-    setSort,
 } from "./store/photoGallerySlice";
 
-// Components
+// Partials Components
 import PhotoGalleryTopics from "./PhotoGalleryTopics";
 import PhotoGallerySort from "./PhotoGallerySort";
 
-function PhotoGalleryApp() {
+/**
+ * General file for Photo Gallery App
+ */
+const PhotoGalleryApp = () => {
     const { innerHeight: height } = window;
     const dispatch = useDispatch();
     const rootRef = useRef(null);
@@ -34,6 +36,7 @@ function PhotoGalleryApp() {
     const navigate = useNavigate();
 
     const [resource, setResource] = useState("default");
+    const [sort, setSort] = useState("");
     const [searchText, setSearchText] = useState("");
     const [topic, setTopic] = useState(null);
     const [debouncedText] = useDebounce(searchText, 300);
@@ -48,12 +51,17 @@ function PhotoGalleryApp() {
             ...photoGallery.request,
             page: 1,
         };
+
+        // Handle search photos
         if (typeof search !== "undefined") {
             setResource("search");
             setTopic(null);
 
             requestParams.query = search ?? null;
+            requestParams.order_by = sort ?? null;
             dispatch(searchPhotos(requestParams));
+
+            // Handles topic photos
         } else if (typeof topic !== "undefined") {
             setResource("topics");
             setSearchText("");
@@ -63,9 +71,11 @@ function PhotoGalleryApp() {
             requestParams.query = null;
             requestParams.page = 1;
             dispatch(getPhotosByTopic({ requestParams, topic }));
+
+            // Handles initial set of photos
         } else {
             setResource("default");
-            setSearchText(null);
+            setSearchText("");
             setTopic(null);
 
             requestParams.order_by = null;
@@ -73,16 +83,13 @@ function PhotoGalleryApp() {
             requestParams.page = 1;
             dispatch(getPhotos(requestParams));
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, routerParams, photoGallery.request.order_by]);
+    }, [dispatch, routerParams, sort]);
 
     // Navigate search
     useEffect(() => {
         if (debouncedText) {
             navigate("/q/" + debouncedText);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedText]);
 
     // Handle fetching more photos
@@ -112,10 +119,10 @@ function PhotoGalleryApp() {
 
     // Handle Search sort
     const handleSort = (sortType) => {
-        dispatch(setSort(sortType));
+        setSort(sortType);
     };
 
-    // Handle Infinite scroll
+    // Handles scroll function to execute getMore function at bottom
     const handleScroll = (e) => {
         const bottom =
             rootRef.current.scrollHeight - rootRef.current.scrollTop <=
@@ -213,6 +220,6 @@ function PhotoGalleryApp() {
             </div>
         </div>
     );
-}
+};
 
 export default React.memo(PhotoGalleryApp);

@@ -49,7 +49,7 @@ const PhotoGallerySort = ({ handleSort, sort }) => {
                     horizontal: "left",
                 }}
             >
-                <MenuItem onClick={() => handleClickSort("relevance")}>
+                <MenuItem onClick={() => handleClickSort("relevant")}>
                     Relevance
                 </MenuItem>
                 <MenuItem onClick={() => handleClickSort("latest")}>

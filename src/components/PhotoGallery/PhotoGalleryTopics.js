@@ -18,8 +18,11 @@ const PhotoGalleryTopics = (props) => {
 
     const topics = useSelector((state) => state.photoGalleryReducer.topics);
 
+    // Get Topics
     useEffect(() => {
-        dispatch(getListOfTopics());
+        if (topics.length === 0) {
+            dispatch(getListOfTopics());
+        }
     }, [dispatch]);
 
     // Set tab active when topic is active
@@ -34,6 +37,7 @@ const PhotoGalleryTopics = (props) => {
         }
     }, [topics]);
 
+    // handle redirection for selected topic
     const handleChange = (event, newValue) => {
         setTab(newValue);
         const url =
